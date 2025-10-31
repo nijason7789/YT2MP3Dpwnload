@@ -1,0 +1,248 @@
+.conversion-status {
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--glass-bg);
+  border: 2px solid var(--glass-border);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-glow);
+}
+
+.conversion-status.loading {
+  border-color: rgba(120, 119, 198, 0.6);
+  background: rgba(120, 119, 198, 0.1);
+  box-shadow: 
+    0 20px 40px rgba(120, 119, 198, 0.3),
+    0 0 0 1px rgba(120, 119, 198, 0.2);
+}
+
+.conversion-status.success {
+  border-color: rgba(75, 172, 254, 0.6);
+  background: rgba(75, 172, 254, 0.1);
+  box-shadow: 
+    0 20px 40px rgba(75, 172, 254, 0.3),
+    0 0 0 1px rgba(75, 172, 254, 0.2);
+}
+
+.conversion-status.error {
+  border-color: rgba(250, 112, 154, 0.6);
+  background: rgba(250, 112, 154, 0.1);
+  box-shadow: 
+    0 20px 40px rgba(250, 112, 154, 0.3),
+    0 0 0 1px rgba(250, 112, 154, 0.2);
+}
+
+.status-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.status-icon {
+  flex-shrink: 0;
+}
+
+.status-icon.spinning {
+  animation: spin 1s linear infinite;
+  color: #7877c6;
+  filter: drop-shadow(0 0 8px rgba(120, 119, 198, 0.6));
+}
+
+.status-icon.success {
+  color: #4facfe;
+  filter: drop-shadow(0 0 8px rgba(75, 172, 254, 0.6));
+}
+
+.status-icon.error {
+  color: #fa709a;
+  filter: drop-shadow(0 0 8px rgba(250, 112, 154, 0.6));
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.status-text {
+  flex: 1;
+}
+
+.status-message {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem 0;
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  font-weight: 500;
+  min-width: 40px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.download-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.25rem 2rem;
+  background: var(--success-gradient);
+  border: none;
+  border-radius: 16px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  flex: 1;
+  min-width: 150px;
+  box-shadow: 
+    0 8px 32px rgba(75, 172, 254, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.download-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s;
+}
+
+.download-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 20px 40px rgba(75, 172, 254, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.download-button:hover::before {
+  left: 100%;
+}
+
+.reset-button,
+.retry-button {
+  padding: 1.25rem 2rem;
+  background: var(--glass-bg);
+  border: 2px solid var(--glass-border);
+  border-radius: 16px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  flex: 1;
+  min-width: 120px;
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-glow);
+}
+
+.reset-button:hover,
+.retry-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 
+    0 20px 40px rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .conversion-status {
+    margin: 1.5rem auto;
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .status-content {
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .status-message {
+    font-size: 1rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .download-button,
+  .reset-button,
+  .retry-button {
+    padding: 1.25rem;
+    font-size: 0.95rem;
+    min-width: unset;
+  }
+
+  .progress-container {
+    gap: 0.75rem;
+  }
+
+  .progress-text {
+    font-size: 0.85rem;
+    min-width: 35px;
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: light) {
+  .status-message {
+    color: #333;
+  }
+
+  .progress-text {
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  .reset-button,
+  .retry-button {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.2);
+    color: #333;
+  }
+
+  .reset-button:hover,
+  .retry-button:hover {
+    background: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.3);
+  }
+}

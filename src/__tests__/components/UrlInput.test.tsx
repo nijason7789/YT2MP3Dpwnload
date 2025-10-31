@@ -1,0 +1,85 @@
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { UrlInput } from '../../components/UrlInput';
+
+describe('UrlInput Component', () => {
+  const mockOnSubmit = jest.fn();
+
+  beforeEach(() => {
+    mockOnSubmit.mockClear();
+  });
+
+  it('renders correctly', () => {
+    render(<UrlInput onSubmit={mockOnSubmit} />);
+    
+    expect(screen.getByPlaceholderText('Paste YouTube URL here...')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /convert to mp3/i })).toBeInTheDocument();
+  });
+
+  it('shows error for invalid URL', async () => {
+    const user = userEvent.setup();
+    render(<UrlInput onSubmit={mockOnSubmit} />);
+    
+    const input = screen.getByPlaceholderText('Paste YouTube URL here...');
+    const button = screen.getByRole('button', { name: /convert to mp3/i });
+    
+    await user.type(input, 'invalid-url');
+    await user.click(button);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Please enter a valid YouTube URL')).toBeInTheDocument();
+    });
+    
+    expect(mockOnSubmit).not.toHaveBeenCalled();
+  });
+
+  it('submits valid YouTube URL', async () => {
+    const user = userEvent.setup();
+    const validUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+    
+    render(<UrlInput onSubmit={mockOnSubmit} />);
+    
+    const input = screen.getByPlaceholderText('Paste YouTube URL here...');
+    const button = screen.getByRole('button', { name: /convert to mp3/i });
+    
+    await user.type(input, validUrl);
+    await user.click(button);
+    
+    await waitFor(() => {
+      expect(mockOnSubmit).toHaveBeenCalledWith(validUrl);
+    });
+  });
+
+  it('disables input and button when disabled prop is true', () => {
+    render(<UrlInput onSubmit={mockOnSubmit} disabled={true} />);
+    
+    const input = screen.getByPlaceholderText('Paste YouTube URL here...');
+    const button = screen.getByRole('button', { name: /convert to mp3/i });
+    
+    expect(input).toBeDisabled();
+    expect(button).toBeDisabled();
+  });
+
+  it('clears error when user starts typing', async () => {
+    const user = userEvent.setup();
+    render(<UrlInput onSubmit={mockOnSubmit} />);
+    
+    const input = screen.getByPlaceholderText('Paste YouTube URL here...');
+    const button = screen.getByRole('button', { name: /convert to mp3/i });
+    
+    // First, trigger an error using an invalid URL
+    await user.type(input, 'invalid-url');
+    await user.click(button);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Please enter a valid YouTube URL')).toBeInTheDocument();
+    });
+    
+    // Type additional characters to trigger error clearing (error clears when value.trim() is truthy)
+    await user.type(input, 'https');
+    
+    await waitFor(() => {
+      expect(screen.queryByText('Please enter a valid YouTube URL')).not.toBeInTheDocument();
+    });
+  });
+});

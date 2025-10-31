@@ -1,0 +1,76 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+.app-footer {
+  text-align: center;
+  margin-top: 4rem;
+  padding: 2rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.app-footer p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.footer-note {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .app {
+    padding: 1rem;
+  }
+
+  .main-content {
+    gap: 1.5rem;
+  }
+
+  .app-footer {
+    margin-top: 3rem;
+    padding: 1.5rem 0;
+  }
+
+  .app-footer p {
+    font-size: 0.85rem;
+    padding: 0 1rem;
+  }
+
+  .footer-note {
+    font-size: 0.75rem;
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: light) {
+  .app-footer {
+    border-top-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .app-footer p {
+    color: rgba(0, 0, 0, 0.6);
+  }
+}
