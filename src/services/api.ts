@@ -4,7 +4,10 @@ import { DownloadResponse, VideoInfo } from '../types';
 // Using RapidAPI YouTube to MP3 converter service
 const API_BASE_URL = 'https://youtube-mp4-mp3-downloader.p.rapidapi.com';
 // Use environment variable or empty string for API key
-const API_KEY = process.env.VITE_RAPIDAPI_KEY || '';
+const API_KEY = import.meta.env.VITE_RAPIDAPI_KEY || '';
+
+// Debug: Log API key status (only length for security)
+console.log('API Key status:', API_KEY ? `Set (${API_KEY.length} chars)` : 'Not set');
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,

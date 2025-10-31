@@ -26,6 +26,18 @@ jobs:
     - name: Run unit tests
       run: npm test
       
+    - name: Verify environment variables
+      run: |
+        echo "Checking if VITE_RAPIDAPI_KEY is set..."
+        if [ -z "$VITE_RAPIDAPI_KEY" ]; then
+          echo "❌ VITE_RAPIDAPI_KEY is not set or empty"
+          exit 1
+        else
+          echo "✅ VITE_RAPIDAPI_KEY is set (length: ${#VITE_RAPIDAPI_KEY})"
+        fi
+      env:
+        VITE_RAPIDAPI_KEY: ${{ secrets.VITE_RAPIDAPI_KEY }}
+        
     - name: Build application
       run: npm run build
       env:
