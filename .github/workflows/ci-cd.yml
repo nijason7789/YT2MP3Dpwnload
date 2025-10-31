@@ -47,6 +47,9 @@ jobs:
       pages: write
       id-token: write
     
+    environment:
+      name: github-pages
+    
     steps:
     - name: Download build artifacts
       uses: actions/download-artifact@v4
