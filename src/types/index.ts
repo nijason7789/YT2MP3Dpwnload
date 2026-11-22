@@ -14,6 +14,7 @@ export interface ConversionStatus {
 export interface DownloadResponse {
   success: boolean;
   downloadUrl?: string;
+  filename?: string;
   error?: string;
   videoInfo?: VideoInfo;
 }

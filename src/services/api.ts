@@ -36,7 +36,12 @@ export const convertToMp3 = async (videoUrl: string): Promise<DownloadResponse> 
     if (!response.data.size || !response.headers['content-type']?.includes('audio/mpeg')) {
       return { success: false, error: 'The server did not return an MP3 file.' };
     }
-    return { success: true, downloadUrl: URL.createObjectURL(response.data) };
+    let filename = 'audio.mp3';
+    const encoded = response.headers['content-disposition']?.match(/filename\*=UTF-8''([^;]+)/i)?.[1];
+    if (encoded) {
+      try { filename = decodeURIComponent(encoded); } catch { /* Keep the default for malformed headers. */ }
+    }
+    return { success: true, downloadUrl: URL.createObjectURL(response.data), filename };
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.data instanceof Blob) {
       try {

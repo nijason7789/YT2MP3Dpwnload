@@ -1,8 +1,9 @@
 import { createServer } from 'node:http';
 import { pathToFileURL } from 'node:url';
 import { convertAudio } from './convert.mjs';
+import { getVideoTitle, downloadFilename } from './title.mjs';
 
-export function createApp({ key = process.env.RAPIDAPI_KEY, origins = process.env.ALLOWED_ORIGINS || '', convert = convertAudio, requiresKey = true } = {}) {
+export function createApp({ key = process.env.RAPIDAPI_KEY, origins = process.env.ALLOWED_ORIGINS || '', convert = convertAudio, getTitle = getVideoTitle, requiresKey = true } = {}) {
   const allowed = new Set(origins.split(',').map(value => value.trim()).filter(Boolean));
   let busy = false;
   let attempts = [];
@@ -15,6 +16,7 @@ export function createApp({ key = process.env.RAPIDAPI_KEY, origins = process.en
     if (origin) res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
     if (req.method === 'OPTIONS') { res.writeHead(204); return res.end(); }
     if (req.method === 'GET' && req.url === '/health') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -40,8 +42,10 @@ export function createApp({ key = process.env.RAPIDAPI_KEY, origins = process.en
       if (!data || typeof data.id !== 'string' || !/^[a-zA-Z0-9_-]{11}$/.test(data.id)) return json(400, 'Invalid YouTube video ID.');
       attempts.push(Date.now());
       const mp3 = await convert(data.id, key);
+      const filename = downloadFilename(await getTitle(data.id), data.id);
+      const encoded = encodeURIComponent(filename).replace(/['()*]/g, char => `%${char.charCodeAt(0).toString(16).toUpperCase()}`);
       if (res.destroyed) return;
-      res.writeHead(200, { 'Content-Type': 'audio/mpeg', 'Content-Disposition': 'attachment; filename="audio.mp3"', 'Content-Length': mp3.length });
+      res.writeHead(200, { 'Content-Type': 'audio/mpeg', 'Content-Disposition': `attachment; filename="audio.mp3"; filename*=UTF-8''${encoded}`, 'Content-Length': mp3.length });
       res.end(mp3);
     } catch (error) {
       if (!res.destroyed) json(422, error.message || 'Conversion failed.');

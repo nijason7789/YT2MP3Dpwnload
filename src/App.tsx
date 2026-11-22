@@ -5,7 +5,7 @@ import { useConverter } from './hooks/useConverter';
 import './App.css';
 
 function App() {
-  const { status, downloadUrl, convert, reset } = useConverter();
+  const { status, downloadUrl, filename, convert, reset } = useConverter();
 
   const handleUrlSubmit = async (url: string) => {
     await convert(url);
@@ -15,7 +15,7 @@ function App() {
     if (downloadUrl) {
       const link = document.createElement('a');
       link.href = downloadUrl;
-      link.download = 'audio.mp3';
+      link.download = filename;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

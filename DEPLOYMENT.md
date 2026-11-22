@@ -42,6 +42,8 @@ Rebuild and deploy the frontend after setting the URL. Remove the old `VITE_RAPI
 
 The page sends `/health` on load to wake the backend. Submitting a URL waits for readiness automatically before posting `/convert`, then downloads the MP3 as a local Blob. Initial startup can take about a minute, and conversion takes additional time. Wake checks retry; conversion requests do not automatically retry to avoid duplicate quota consumption.
 
+Downloads use the YouTube video title as the filename. After converting, the backend fetches public YouTube oEmbed metadata (no RapidAPI request), sanitizes unsafe filename characters, and sends a UTF-8 `Content-Disposition` filename exposed through CORS. The frontend preserves that name when downloading the Blob. If metadata is unavailable within five seconds, the video ID is used instead. Redeploy both backend and frontend for this feature.
+
 ## Limits and operational behavior
 
 - Request bodies are capped at 2 KiB and must finish uploading within 10 seconds.

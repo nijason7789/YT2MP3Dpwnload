@@ -6,12 +6,14 @@ import { isValidYouTubeUrl } from '../utils/youtube';
 export const useConverter = () => {
   const [status, setStatus] = useState<ConversionStatus>({ status: 'idle' });
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [filename, setFilename] = useState('audio.mp3');
 
   const currentUrl = useRef<string | null>(null);
   const clearDownload = useCallback(() => {
     if (currentUrl.current?.startsWith('blob:')) URL.revokeObjectURL(currentUrl.current);
     currentUrl.current = null;
     setDownloadUrl(null);
+    setFilename('audio.mp3');
   }, []);
   useEffect(() => {
     void wakeBackend().catch(() => {});
@@ -39,6 +41,7 @@ export const useConverter = () => {
       if (result.success && result.downloadUrl) {
         currentUrl.current = result.downloadUrl;
         setDownloadUrl(result.downloadUrl);
+        setFilename(result.filename || 'audio.mp3');
         setStatus({ status: 'success', message: 'Conversion completed!' });
       } else {
         setStatus({ status: 'error', message: result.error || 'Conversion failed' });
@@ -60,6 +63,7 @@ export const useConverter = () => {
   return {
     status,
     downloadUrl,
+    filename,
     convert,
     reset
   };

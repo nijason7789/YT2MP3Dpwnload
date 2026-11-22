@@ -20,7 +20,7 @@ test('HTTP validates origin, ID, concurrency and hourly quota', async () => {
   let release;
   const pending = new Promise(resolve => { release = resolve; });
   let calls = 0;
-  const app = createApp({ key: 'test', origins: 'https://site.test', convert: async () => { calls++; if (calls === 1) await pending; return Buffer.from('mp3'); } });
+  const app = createApp({ getTitle: async () => '中文歌曲 🎵', key: 'test', origins: 'https://site.test', convert: async () => { calls++; if (calls === 1) await pending; return Buffer.from('mp3'); } });
   app.listen(0, '127.0.0.1');
   await once(app, 'listening');
   const base = `http://127.0.0.1:${app.address().port}`;
@@ -35,6 +35,9 @@ test('HTTP validates origin, ID, concurrency and hourly quota', async () => {
     release();
     const r = await first;
     assert.equal(r.headers.get('content-type'), 'audio/mpeg');
+    assert.equal(r.headers.get('access-control-expose-headers'), 'Content-Disposition');
+    assert.match(r.headers.get('content-disposition'), /filename\*=UTF-8''/);
+    assert.equal(decodeURIComponent(r.headers.get('content-disposition').split("UTF-8''")[1]), '中文歌曲 🎵.mp3');
     assert.equal(await r.text(), 'mp3');
     for (let i = 0; i < 9; i++) assert.equal((await post()).status, 200);
     assert.equal((await post()).status, 429);

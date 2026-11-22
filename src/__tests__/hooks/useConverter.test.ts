@@ -86,7 +86,7 @@ describe('useConverter Hook', () => {
   it('waits for startup before converting and cleans up local download URLs', async () => {
     let ready!: () => void;
     mockedApi.wakeBackend.mockReturnValue(new Promise<void>(resolve => { ready = resolve; }));
-    mockedApi.convertToMp3.mockResolvedValue({ success: true, downloadUrl: 'blob:audio' });
+    mockedApi.convertToMp3.mockResolvedValue({ success: true, downloadUrl: 'blob:audio', filename: 'Test Song.mp3' });
     URL.revokeObjectURL = jest.fn();
     const { result, unmount } = renderHook(() => useConverter());
     let conversion!: Promise<unknown>;
@@ -95,7 +95,9 @@ describe('useConverter Hook', () => {
     expect(mockedApi.convertToMp3).not.toHaveBeenCalled();
     await act(async () => { ready(); await conversion; });
     expect(result.current.status.status).toBe('success');
+    expect(result.current.filename).toBe('Test Song.mp3');
     act(() => result.current.reset());
+    expect(result.current.filename).toBe('audio.mp3');
     expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:audio');
     unmount();
   });

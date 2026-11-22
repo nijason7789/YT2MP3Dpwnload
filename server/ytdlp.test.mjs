@@ -17,7 +17,7 @@ test('direct download accepts only a video ID', async () => {
 });
 
 test('experimental server is ready and converts without a RapidAPI key', async () => {
-  const app = createApp({ key: '', requiresKey: false, convert: async () => Buffer.from('mp3') });
+  const app = createApp({ getTitle: async () => '???? ??', key: '', requiresKey: false, convert: async () => Buffer.from('mp3') });
   app.listen(0, '127.0.0.1');
   await once(app, 'listening');
   const base = `http://127.0.0.1:${app.address().port}`;
