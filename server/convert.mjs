@@ -29,6 +29,8 @@ export async function transcode(input, output) {
 }
 
 export async function convertAudio(id, key) {
+  if (!/^[a-zA-Z0-9_-]{11}$/.test(id)) throw new Error('Invalid YouTube video ID.');
+  if (!key) throw new Error('The server API key is not configured.');
   const signal = AbortSignal.timeout(150000);
   const api = async (path, body) => {
     const response = await fetch(`https://${HOST}${path}`, {
@@ -41,13 +43,15 @@ export async function convertAudio(id, key) {
     return data;
   };
   const job = await api('/api/v2/request', { id, type: 'audio' });
+  if (['FAILED', 'ERROR'].includes(job.state)) throw new Error(job.message || 'Audio preparation failed.');
   if (typeof job.uid !== 'string' || !job.uid) throw new Error('Audio provider did not return a request ID.');
-  let downloadUrl;
-  for (let i = 0; i < 45; i++) {
+  let downloadUrl = job.state === 'FINISH' ? job.downloadUrl : null;
+  // Poll at most every five seconds to avoid spending request quota on busy-waiting.
+  for (let i = 0; !downloadUrl && i < 18; i++) {
     const status = await api(`/api/v2/request/status?uid=${encodeURIComponent(job.uid)}`);
     if (status.state === 'FINISH' && status.downloadUrl) { downloadUrl = status.downloadUrl; break; }
     if (['FAILED', 'ERROR'].includes(status.state)) throw new Error(status.message || 'Audio preparation failed.');
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    if (i < 17) await new Promise(resolve => setTimeout(resolve, 5000));
   }
   if (!downloadUrl) throw new Error('Audio preparation timed out. Please try again later.');
   const response = await fetch(checkDownloadUrl(downloadUrl), { signal, redirect: 'error' });

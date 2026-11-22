@@ -2,6 +2,16 @@
 
 ## Backend (Free Web Service)
 
+Production flow: frontend -> Render `/convert` -> RapidAPI audio request -> M4A download on Render -> FFmpeg -> MP3 response. The browser never contacts RapidAPI or the M4A download host.
+
+### Switch the existing yt-dlp experiment service
+
+For the existing `yt2mp3dpwnload.onrender.com` service, change **Settings > Build & Deploy > Dockerfile Path** from `./Dockerfile.ytdlp` to **`./Dockerfile`**. Leave the Docker command override empty so the image starts `server/index.mjs`. Set `RAPIDAPI_KEY` and `ALLOWED_ORIGINS` in Environment, then deploy the updated commit. Use a rotated key; do not paste it into chat. `/health` returns `ready: false` when the backend key is missing. This replaces the direct YouTube download path for that service without changing its URL.
+
+The frontend build must have `VITE_API_BASE_URL=https://yt2mp3dpwnload.onrender.com` (or the actual service URL). Rebuild the frontend after setting it. A health check never uses RapidAPI quota. Conversion does: review the subscription's remaining quota/overage rules before making real requests. Automated tests use mock provider responses and consume no quota.
+
+### Create a new service instead
+
 1. Push this repository, including `Dockerfile`, `server/`, and `render.yaml`, to GitHub.
 2. In Render choose **New > Blueprint**, connect the repository, and use `render.yaml`. Alternatively create a **Web Service**, choose **Docker**, repository root as root directory, and the **Free** instance type. Do not select Static Site for the backend.
 3. Set these server environment variables:
@@ -13,6 +23,14 @@
 Choose the Free instance and do not add a payment method if you want included bandwidth exhaustion to suspend service rather than incur supplementary bandwidth charges. Check the current Render billing rules in your dashboard. RapidAPI has its own independent subscription and quotas.
 
 ## Frontend
+
+Environment variable placement:
+
+| Name | Location | Secret? |
+| --- | --- | --- |
+| `RAPIDAPI_KEY` | Render service > Environment | Yes: backend only, never commit or prefix with `VITE_` |
+| `ALLOWED_ORIGINS` | Render service > Environment | No: the frontend origins permitted by CORS |
+| `VITE_API_BASE_URL` | Frontend build environment (GitHub Actions repository Variables) | No: the public Render backend URL, not an API key |
 
 Set `VITE_API_BASE_URL` to the Render service URL, without a trailing path.
 
@@ -30,7 +48,7 @@ The page sends `/health` on load to wake the backend. Submitting a URL waits for
 - One conversion at a time; additional requests receive HTTP 429. Global limit: 10 accepted conversion attempts per hour per process.
 - This is a lightweight limit, not authentication. It resets on restart and is not shared between instances. CORS is a browser restriction, not protection against scripted API calls. Use persistent quotas and authentication before broader public release.
 - Input download is capped at 40 MiB. FFprobe verifies duration **after downloading**, before transcoding. Unknown durations and audio longer than 600 seconds are rejected; exactly 600 seconds is allowed. This enforces actual downloaded audio duration, not source metadata before API usage.
-- Provider polling is bounded; downloading has a 150-second overall deadline, probing 15 seconds, encoding 60 seconds. Output is 128 kbps MP3. No paid provider MP3 conversion is requested.
+- Provider polling is bounded to 18 status requests at five-second intervals (at most 85 seconds of waits); API calls and downloading share a 150-second deadline, probing 15 seconds, encoding 60 seconds. An immediately completed create response skips status polling. Output is 128 kbps MP3. No paid provider MP3 conversion is requested. Provider failures stop the request without automatic retries.
 - Temporary files are removed after each operation, including failure. Downloads are returned directly, so no database or persistent disk is required. Restarting Render during a conversion interrupts the request; the user must retry.
 - Render Free may suspend services that initiate unusually high external traffic. Free hosting is best treated as a trial for this use case.
 

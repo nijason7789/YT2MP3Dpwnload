@@ -4,6 +4,8 @@ React + TypeScript frontend with a small Node.js/FFmpeg backend for Render.
 
 The backend uses RapidAPI v2 to obtain audio (Basic-compatible `type: "audio"`), validates its duration, and transcodes locally to 128 kbps MP3. Videos must be no longer than 10 minutes. The RapidAPI key stays on the backend.
 
+Use `Dockerfile` / `render.yaml` for this flow. `Dockerfile.ytdlp` / `render-ytdlp.yaml` remain experimental and download directly from YouTube; this direct path was blocked on Render during testing. Switching an existing experiment service requires changing its Dockerfile path and setting the server API key; see [DEPLOYMENT.md](DEPLOYMENT.md).
+
 ## Development
 
 ```sh
