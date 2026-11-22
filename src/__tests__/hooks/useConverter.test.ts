@@ -9,6 +9,7 @@ const mockedApi = api as jest.Mocked<typeof api>;
 describe('useConverter Hook', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockedApi.wakeBackend.mockResolvedValue(undefined);
   });
 
   it('initializes with idle status', () => {
@@ -82,4 +83,21 @@ describe('useConverter Hook', () => {
     expect(result.current.status.status).toBe('idle');
     expect(result.current.downloadUrl).toBeNull();
   });
+  it('waits for startup before converting and cleans up local download URLs', async () => {
+    let ready!: () => void;
+    mockedApi.wakeBackend.mockReturnValue(new Promise<void>(resolve => { ready = resolve; }));
+    mockedApi.convertToMp3.mockResolvedValue({ success: true, downloadUrl: 'blob:audio' });
+    URL.revokeObjectURL = jest.fn();
+    const { result, unmount } = renderHook(() => useConverter());
+    let conversion!: Promise<unknown>;
+    act(() => { conversion = result.current.convert('https://youtu.be/jNQXAC9IVRw'); });
+    expect(result.current.status.status).toBe('loading');
+    expect(mockedApi.convertToMp3).not.toHaveBeenCalled();
+    await act(async () => { ready(); await conversion; });
+    expect(result.current.status.status).toBe('success');
+    act(() => result.current.reset());
+    expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:audio');
+    unmount();
+  });
+
 });

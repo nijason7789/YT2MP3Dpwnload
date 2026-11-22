@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: yt2mp3-direct-experiment
+    runtime: docker
+    dockerfilePath: ./Dockerfile.ytdlp
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: ALLOWED_ORIGINS
+        sync: false

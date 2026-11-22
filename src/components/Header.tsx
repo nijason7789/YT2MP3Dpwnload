@@ -13,7 +13,7 @@ export const Header: React.FC = () => {
         </div>
         <h1 className="app-title">YT2MP3 Converter</h1>
         <p className="app-subtitle">
-          Convert YouTube videos to high-quality MP3 files instantly
+          Convert YouTube videos up to 10 minutes into MP3
         </p>
       </div>
     </header>

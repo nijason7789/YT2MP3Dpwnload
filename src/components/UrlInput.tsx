@@ -25,7 +25,7 @@ export const UrlInput: React.FC<UrlInputProps> = ({
       return;
     }
 
-    if (!isValidYouTubeUrl(url)) {
+    if (!isValidYouTubeUrl(url.trim())) {
       setError('Please enter a valid YouTube URL');
       return;
     }

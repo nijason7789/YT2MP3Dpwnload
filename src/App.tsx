@@ -44,7 +44,7 @@ function App() {
 
       <footer className="app-footer">
         <p>
-          Free YouTube to MP3 converter. 
+          YouTube to MP3 converter. Videos up to 10 minutes.
           <span className="footer-note">No registration required.</span>
         </p>
       </footer>

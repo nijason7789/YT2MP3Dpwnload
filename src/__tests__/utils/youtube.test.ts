@@ -9,7 +9,10 @@ describe('YouTube Utils', () => {
         'http://www.youtube.com/watch?v=dQw4w9WgXcQ',
         'https://youtu.be/dQw4w9WgXcQ',
         'https://www.youtube.com/embed/dQw4w9WgXcQ',
-        'https://www.youtube.com/v/dQw4w9WgXcQ'
+        'https://www.youtube.com/v/dQw4w9WgXcQ',
+        'https://m.youtube.com/watch?si=share&v=dQw4w9WgXcQ',
+        'https://www.youtube.com/shorts/dQw4w9WgXcQ',
+        '  https://youtu.be/dQw4w9WgXcQ  '
       ];
 
       validUrls.forEach(url => {
@@ -23,7 +26,11 @@ describe('YouTube Utils', () => {
         'not-a-url',
         'https://vimeo.com/123456',
         'https://youtube.com/watch?v=invalid',
-        ''
+        '',
+        'https://evil.test/youtube.com/watch?v=dQw4w9WgXcQ',
+        'https://youtube.com.evil.test/watch?v=dQw4w9WgXcQ',
+        'https://youtube.com/watch?v=dQw4w9WgXcQextra',
+        'https://youtu.be/dQw4w9WgXcQ/extra'
       ];
 
       invalidUrls.forEach(url => {

@@ -1,19 +1,23 @@
-/**
- * Validates YouTube URL format
- */
-export const isValidYouTubeUrl = (url: string): boolean => {
-  const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-  return youtubeRegex.test(url);
+/** Parse only supported YouTube hosts and complete 11-character video IDs. */
+export const extractVideoId = (value: string): string | null => {
+  try {
+    const text = value.trim();
+    const url = new URL(/^https?:\/\//i.test(text) ? text : `https://${text}`);
+    if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.port) return null;
+    let id: string | null = null;
+    if (url.hostname === 'youtu.be') {
+      id = url.pathname.slice(1);
+    } else if (['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com'].includes(url.hostname)) {
+      if (url.pathname === '/watch') id = url.searchParams.get('v');
+      else id = url.pathname.match(/^\/(?:embed|v|shorts|live)\/([^/]+)\/?$/)?.[1] || null;
+    }
+    return id && /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : null;
+  } catch {
+    return null;
+  }
 };
 
-/**
- * Extracts video ID from YouTube URL
- */
-export const extractVideoId = (url: string): string | null => {
-  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-  const match = url.match(regex);
-  return match ? match[1] : null;
-};
+export const isValidYouTubeUrl = (url: string): boolean => extractVideoId(url) !== null;
 
 /**
  * Formats duration from seconds to MM:SS format

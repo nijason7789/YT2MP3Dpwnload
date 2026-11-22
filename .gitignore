@@ -137,3 +137,7 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Local download/conversion smoke-test artifacts
+audio-test.*
+audio-render-smoke.mp3
