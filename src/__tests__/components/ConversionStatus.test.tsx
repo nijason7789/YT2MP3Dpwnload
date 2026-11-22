@@ -16,88 +16,88 @@ describe('ConversionStatus Component', () => {
     const { container } = render(
       <ConversionStatus status={status} onDownload={mockOnDownload} onReset={mockOnReset} />
     );
-    
+
     expect(container.firstChild).toBeNull();
   });
 
   it('renders loading state correctly', () => {
-    const status: Status = { status: 'loading', message: 'Preparing conversion...' };
+    const status: Status = { status: 'loading', message: '正在準備轉檔…' };
     render(
       <ConversionStatus status={status} onDownload={mockOnDownload} onReset={mockOnReset} />
     );
-    
-    expect(screen.getByText('Preparing conversion...')).toBeInTheDocument();
+
+    expect(screen.getByText('正在準備轉檔…')).toBeInTheDocument();
     expect(screen.getByTestId('loader-icon')).toBeInTheDocument();
   });
 
   it('renders converting state with progress', () => {
-    const status: Status = { 
-      status: 'converting', 
-      message: 'Converting to MP3...', 
-      progress: 75 
+    const status: Status = {
+      status: 'converting',
+      message: '正在轉換成 MP3…',
+      progress: 75
     };
     render(
       <ConversionStatus status={status} onDownload={mockOnDownload} onReset={mockOnReset} />
     );
-    
-    expect(screen.getByText('Converting to MP3...')).toBeInTheDocument();
+
+    expect(screen.getByText('正在轉換成 MP3…')).toBeInTheDocument();
     expect(screen.getByText('75%')).toBeInTheDocument();
   });
 
   it('renders success state with download button', () => {
-    const status: Status = { status: 'success', message: 'Conversion completed!' };
+    const status: Status = { status: 'success', message: '轉換完成！' };
     const downloadUrl = 'https://example.com/download.mp3';
-    
+
     render(
-      <ConversionStatus 
-        status={status} 
+      <ConversionStatus
+        status={status}
         downloadUrl={downloadUrl}
-        onDownload={mockOnDownload} 
-        onReset={mockOnReset} 
+        onDownload={mockOnDownload}
+        onReset={mockOnReset}
       />
     );
-    
-    expect(screen.getByText('Conversion completed!')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /download mp3/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /convert another/i })).toBeInTheDocument();
+
+    expect(screen.getByText('轉換完成！')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /下載 MP3/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /轉換其他影片/i })).toBeInTheDocument();
   });
 
   it('renders error state with retry button', () => {
-    const status: Status = { status: 'error', message: 'Conversion failed' };
-    
+    const status: Status = { status: 'error', message: '轉換失敗，請稍後再試。' };
+
     render(
       <ConversionStatus status={status} onDownload={mockOnDownload} onReset={mockOnReset} />
     );
-    
-    expect(screen.getByText('Conversion failed')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
+
+    expect(screen.getByText('轉換失敗，請稍後再試。')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /重新嘗試/i })).toBeInTheDocument();
   });
 
   it('calls onDownload when download button is clicked', () => {
-    const status: Status = { status: 'success', message: 'Conversion completed!' };
+    const status: Status = { status: 'success', message: '轉換完成！' };
     const downloadUrl = 'https://example.com/download.mp3';
-    
+
     render(
-      <ConversionStatus 
-        status={status} 
+      <ConversionStatus
+        status={status}
         downloadUrl={downloadUrl}
-        onDownload={mockOnDownload} 
-        onReset={mockOnReset} 
+        onDownload={mockOnDownload}
+        onReset={mockOnReset}
       />
     );
-    
-    fireEvent.click(screen.getByRole('button', { name: /download mp3/i }));
+
+    fireEvent.click(screen.getByRole('button', { name: /下載 MP3/i }));
     expect(mockOnDownload).toHaveBeenCalledTimes(1);
   });
 
   it('calls onReset when retry button is clicked', () => {
-    const status: Status = { status: 'error', message: 'Conversion failed' };
-    
+    const status: Status = { status: 'error', message: '轉換失敗，請稍後再試。' };
+
     render(
       <ConversionStatus status={status} onDownload={mockOnDownload} onReset={mockOnReset} />
     );
-    
-    fireEvent.click(screen.getByRole('button', { name: /try again/i }));
+
+    fireEvent.click(screen.getByRole('button', { name: /重新嘗試/i }));
     expect(mockOnReset).toHaveBeenCalledTimes(1);
   });
 });

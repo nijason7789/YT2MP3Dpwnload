@@ -12,22 +12,22 @@ describe('UrlInput Component', () => {
   it('renders correctly', () => {
     render(<UrlInput onSubmit={mockOnSubmit} />);
     
-    expect(screen.getByPlaceholderText('Paste YouTube URL here...')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /convert to mp3/i })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('在此貼上 YouTube 影片網址…')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /轉換成 MP3/i })).toBeInTheDocument();
   });
 
   it('shows error for invalid URL', async () => {
     const user = userEvent.setup();
     render(<UrlInput onSubmit={mockOnSubmit} />);
     
-    const input = screen.getByPlaceholderText('Paste YouTube URL here...');
-    const button = screen.getByRole('button', { name: /convert to mp3/i });
+    const input = screen.getByPlaceholderText('在此貼上 YouTube 影片網址…');
+    const button = screen.getByRole('button', { name: /轉換成 MP3/i });
     
     await user.type(input, 'invalid-url');
     await user.click(button);
     
     await waitFor(() => {
-      expect(screen.getByText('Please enter a valid YouTube URL')).toBeInTheDocument();
+      expect(screen.getByText('請輸入有效的 YouTube 影片網址')).toBeInTheDocument();
     });
     
     expect(mockOnSubmit).not.toHaveBeenCalled();
@@ -39,8 +39,8 @@ describe('UrlInput Component', () => {
     
     render(<UrlInput onSubmit={mockOnSubmit} />);
     
-    const input = screen.getByPlaceholderText('Paste YouTube URL here...');
-    const button = screen.getByRole('button', { name: /convert to mp3/i });
+    const input = screen.getByPlaceholderText('在此貼上 YouTube 影片網址…');
+    const button = screen.getByRole('button', { name: /轉換成 MP3/i });
     
     await user.type(input, validUrl);
     await user.click(button);
@@ -53,8 +53,8 @@ describe('UrlInput Component', () => {
   it('disables input and button when disabled prop is true', () => {
     render(<UrlInput onSubmit={mockOnSubmit} disabled={true} />);
     
-    const input = screen.getByPlaceholderText('Paste YouTube URL here...');
-    const button = screen.getByRole('button', { name: /convert to mp3/i });
+    const input = screen.getByPlaceholderText('在此貼上 YouTube 影片網址…');
+    const button = screen.getByRole('button', { name: /轉換成 MP3/i });
     
     expect(input).toBeDisabled();
     expect(button).toBeDisabled();
@@ -64,22 +64,22 @@ describe('UrlInput Component', () => {
     const user = userEvent.setup();
     render(<UrlInput onSubmit={mockOnSubmit} />);
     
-    const input = screen.getByPlaceholderText('Paste YouTube URL here...');
-    const button = screen.getByRole('button', { name: /convert to mp3/i });
+    const input = screen.getByPlaceholderText('在此貼上 YouTube 影片網址…');
+    const button = screen.getByRole('button', { name: /轉換成 MP3/i });
     
     // First, trigger an error using an invalid URL
     await user.type(input, 'invalid-url');
     await user.click(button);
     
     await waitFor(() => {
-      expect(screen.getByText('Please enter a valid YouTube URL')).toBeInTheDocument();
+      expect(screen.getByText('請輸入有效的 YouTube 影片網址')).toBeInTheDocument();
     });
     
     // Type additional characters to trigger error clearing (error clears when value.trim() is truthy)
     await user.type(input, 'https');
     
     await waitFor(() => {
-      expect(screen.queryByText('Please enter a valid YouTube URL')).not.toBeInTheDocument();
+      expect(screen.queryByText('請輸入有效的 YouTube 影片網址')).not.toBeInTheDocument();
     });
   });
 });

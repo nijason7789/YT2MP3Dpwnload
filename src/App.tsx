@@ -44,8 +44,8 @@ function App() {
 
       <footer className="app-footer">
         <p>
-          YouTube to MP3 converter. Videos up to 10 minutes.
-          <span className="footer-note">No registration required.</span>
+          YouTube 音訊轉檔，支援 10 分鐘內的影片。
+          <span className="footer-note">免註冊即可使用。</span>
         </p>
       </footer>
     </div>

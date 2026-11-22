@@ -11,9 +11,9 @@ export const Header: React.FC = () => {
           <span className="logo-arrow">→</span>
           <Music className="logo-icon music" size={32} />
         </div>
-        <h1 className="app-title">YT2MP3 Converter</h1>
+        <h1 className="app-title">YouTube 轉 MP3</h1>
         <p className="app-subtitle">
-          Convert YouTube videos up to 10 minutes into MP3
+          將 10 分鐘內的 YouTube 影片轉成 MP3
         </p>
       </div>
     </header>

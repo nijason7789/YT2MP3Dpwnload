@@ -75,13 +75,13 @@ export const ConversionStatus: React.FC<ConversionStatusProps> = ({
             className="download-button"
           >
             <Download size={20} />
-            Download MP3
+            下載 MP3
           </button>
           <button 
             onClick={onReset}
             className="reset-button"
           >
-            Convert Another
+            轉換其他影片
           </button>
         </div>
       )}
@@ -91,7 +91,7 @@ export const ConversionStatus: React.FC<ConversionStatusProps> = ({
           onClick={onReset}
           className="retry-button"
         >
-          Try Again
+          重新嘗試
         </button>
       )}
     </div>

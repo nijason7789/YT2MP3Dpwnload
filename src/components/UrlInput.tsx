@@ -12,7 +12,7 @@ interface UrlInputProps {
 export const UrlInput: React.FC<UrlInputProps> = ({
   onSubmit,
   disabled = false,
-  placeholder = "Paste YouTube URL here..."
+  placeholder = "在此貼上 YouTube 影片網址…"
 }) => {
   const [url, setUrl] = useState('');
   const [error, setError] = useState('');
@@ -21,12 +21,12 @@ export const UrlInput: React.FC<UrlInputProps> = ({
     e.preventDefault();
     
     if (!url.trim()) {
-      setError('Please enter a YouTube URL');
+      setError('請貼上 YouTube 影片網址');
       return;
     }
 
     if (!isValidYouTubeUrl(url.trim())) {
-      setError('Please enter a valid YouTube URL');
+      setError('請輸入有效的 YouTube 影片網址');
       return;
     }
 
@@ -51,6 +51,7 @@ export const UrlInput: React.FC<UrlInputProps> = ({
           <Link className="input-icon" size={20} />
           <input
             type="url"
+            aria-label="YouTube 影片網址"
             value={url}
             onChange={handleInputChange}
             placeholder={placeholder}
@@ -74,7 +75,7 @@ export const UrlInput: React.FC<UrlInputProps> = ({
         disabled={disabled || !url.trim()}
         className="submit-button"
       >
-        Convert to MP3
+        轉換成 MP3
       </button>
     </form>
   );

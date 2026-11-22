@@ -46,7 +46,7 @@ describe('useConverter Hook', () => {
   it('handles conversion failure', async () => {
     const mockResponse = {
       success: false,
-      error: 'Conversion failed'
+      error: '轉換失敗，請稍後再試。'
     };
     
     mockedApi.convertToMp3.mockResolvedValue(mockResponse);
@@ -58,7 +58,7 @@ describe('useConverter Hook', () => {
     });
     
     expect(result.current.status.status).toBe('error');
-    expect(result.current.status.message).toBe('Conversion failed');
+    expect(result.current.status.message).toBe('轉換失敗，請稍後再試。');
   });
 
   it('validates YouTube URL before conversion', async () => {
@@ -69,7 +69,7 @@ describe('useConverter Hook', () => {
     });
     
     expect(result.current.status.status).toBe('error');
-    expect(result.current.status.message).toBe('Please enter a valid YouTube URL');
+    expect(result.current.status.message).toBe('請輸入有效的 YouTube 影片網址');
     expect(mockedApi.convertToMp3).not.toHaveBeenCalled();
   });
 

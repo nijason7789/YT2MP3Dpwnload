@@ -15,7 +15,9 @@ it('downloads the MP3 using the original Unicode video title', () => {
   });
   try {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /download mp3/i }));
+    expect(screen.getByRole('heading', { name: 'YouTube 轉 MP3' })).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: 'YouTube 影片網址' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /下載 MP3/i }));
     expect(downloaded).toBe('中文歌曲 🎵.mp3');
   } finally { click.mockRestore(); }
 });

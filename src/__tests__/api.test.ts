@@ -11,7 +11,7 @@ describe('backend API', () => {
   });
   it('reports missing server configuration immediately instead of retrying startup', async () => {
     client.get.mockResolvedValueOnce({ data: { ready: false } });
-    await expect(wakeBackend()).rejects.toThrow('not configured');
+    await expect(wakeBackend()).rejects.toThrow('尚未設定完成');
     expect(client.get).toHaveBeenCalledTimes(1);
   });
   it('downloads MP3 without exposing a provider key', async () => {
